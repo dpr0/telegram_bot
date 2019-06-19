@@ -30,7 +30,6 @@ Telegram::Bot::Client.run(ENV['BOT_TOKEN']) do |bot|
     when '/break'
       puts 'break'
       bot.api.send_message(chat_id: message.chat.id, text: 'break')
-      break
     else
       puts 'else'
       bot.api.send_message(chat_id: message.chat.id, text: 'I don\'t understand you :(')
