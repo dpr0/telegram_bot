@@ -1,0 +1,25 @@
+Style/EmptyMethod:
+  EnforcedStyle: expanded
+
+Style/PercentLiteralDelimiters:
+  PreferredDelimiters:
+    '%w': '()'
+
+Metrics/MethodLength:
+  Max: 13
+
+Style/Documentation:
+  Enabled: false
+
+Metrics/BlockLength:
+  Exclude:
+  - 'lib/bot.rb'
+
+Metrics/LineLength:
+  Exclude:
+  - 'lib/bot.rb'
+  Max: 130
+
+Style/RegexpLiteral:
+  Exclude:
+  - 'lib/bot.rb'
