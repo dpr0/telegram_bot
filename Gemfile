@@ -2,4 +2,12 @@
 
 source 'https://rubygems.org'
 
-gemspec
+gem 'dotenv'
+gem 'telegram-bot-ruby'
+
+group :development do
+  gem 'rubocop'
+  gem 'bundler'
+  gem 'byebug'
+  gem 'rake'
+end
