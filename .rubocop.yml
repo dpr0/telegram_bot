@@ -15,11 +15,14 @@ Metrics/BlockLength:
   Exclude:
   - 'lib/bot.rb'
 
-Metrics/LineLength:
+Layout/LineLength:
   Exclude:
   - 'lib/bot.rb'
-  Max: 130
+  Max: 180
 
 Style/RegexpLiteral:
   Exclude:
   - 'lib/bot.rb'
+
+AllCops:
+  NewCops: enable

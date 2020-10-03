@@ -1,38 +1,29 @@
-require 'json'
+# frozen_string_literal: true
+
 require 'byebug'
-require 'restclient'
 require 'dotenv/load'
-require 'yaml'
 require 'telegram/bot'
 
-Telegram::Bot.configure do |config|
-  config.ssl_opts = { verify: false }
-  config.proxy_opts = { uri: "#{ENV['PROXY_SERVER']}:#{ENV['PROXY_PORT']}", socks: true,
-                        user: ENV['PROXY_USERNAME'], password: ENV['PROXY_PASSWORD'] }
-end
-
+TBT = Telegram::Bot::Types
 def button(string)
-  Telegram::Bot::Types::KeyboardButton.new(text: string)
+  TBT::KeyboardButton.new(text: string)
 end
 
-Telegram::Bot::Client.run(ENV['BOT_TOKEN']) do |bot|
-
+Telegram::Bot::Client.run(ENV['BOT_TOKEN'], logger: Logger.new($stderr)) do |bot|
   bot.listen do |message|
+    bot.logger.info(message.text)
     case message.text
-    when '/start'
-      puts 'start'
-      buttons = [[button('/hello'), button('/break')]]
-      markup = Telegram::Bot::Types::ReplyKeyboardMarkup.new(keyboard: buttons, one_time_keyboard: true, resize_keyboard: true)
+    when 'start'
+      buttons = [[button('hello'), button('stop')]]
+      markup = TBT::ReplyKeyboardMarkup.new(keyboard: buttons, one_time_keyboard: true, resize_keyboard: true)
       bot.api.send_message(chat_id: message.chat.id, text: "Привет #{message.from.first_name}! Выберите действие:", reply_markup: markup)
-    when '/hello'
-      puts 'hello'
+    when 'hello'
       bot.api.send_message(chat_id: message.chat.id, text: 'hello')
-    when '/break'
-      puts 'break'
-      bot.api.send_message(chat_id: message.chat.id, text: 'break')
+    when 'stop'
+      kb = TBT::ReplyKeyboardRemove.new(remove_keyboard: true)
+      bot.api.send_message(chat_id: message.chat.id, text: 'stop', reply_markup: kb)
     else
-      puts 'else'
-      bot.api.send_message(chat_id: message.chat.id, text: 'I don\'t understand you :(')
+      bot.api.send_message(chat_id: message.chat.id, text: "#{message.from.first_name}, я не понимаю тебя 🤷‍")
     end
   end
 end
