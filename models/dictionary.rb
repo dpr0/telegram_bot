@@ -4,8 +4,6 @@
 module Dictionary
   class NoRecord < RuntimeError; end
 
-  extend ActiveSupport::Concern
-
   # Методы класса
   module ClassMethods
     def ids_by_codes(*codes)

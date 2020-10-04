@@ -4,6 +4,7 @@ require 'byebug'
 require 'dotenv/load'
 require 'telegram/bot'
 require_relative 'models/application_record'
+require_relative 'models/dictionary'
 Dir['models/*.rb'].each { |file| require_relative file }
 
 TBT = Telegram::Bot::Types
