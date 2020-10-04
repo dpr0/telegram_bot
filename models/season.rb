@@ -7,6 +7,8 @@ class Season < ApplicationRecord
   has_many :stats
   has_many :day_players
 
+  LAST_ID = last.id
+
   def self.days_by_season_id(season_id)
     begin
       Season.cached_by_id[season_id].days.map(&:id)

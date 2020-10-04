@@ -7,8 +7,6 @@ class Player < ApplicationRecord
   has_many   :day_players
   has_many   :stats
 
-  LAST_SEASON_ID = Season.last.id
-
   def goals_by_season(season_id)
     goals.where(season_id: season_id)
   end
@@ -44,16 +42,16 @@ class Player < ApplicationRecord
 
   def self.print_stat(num)
     player = find_by(id: num)
-    assist_count = Goal.where(season_id: LAST_SEASON_ID, assist_player_id: player.id).count
+    assist_count = Goal.where(season_id: Season::LAST_ID, assist_player_id: player.id).count
     return 'Нет такого игрока' unless player
 
-    stat = player.stats.where(season_id: LAST_SEASON_ID).first
+    stat = player.stats.where(season_id: Season::LAST_ID).first
     rate = player.day_players.last
     "#{player.short_name}: https://football.krsz.ru/players/#{player.id}
         рост: #{player.height} / вес: #{player.weight}
         дней: #{stat.days} / игр: #{stat.games}
         победы: #{stat.win} / ничьи: #{stat.draw} / поражения: #{stat.lose}
         рейтинг ЭЛО: #{rate.rate} / коэффициент полезности: #{rate.kp}
-        голы: #{player.goals_by_season(LAST_SEASON_ID).count} / голевые передачи: #{assist_count}"
+        голы: #{player.goals_by_season(Season::LAST_ID).count} / голевые передачи: #{assist_count}"
   end
 end
