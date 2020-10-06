@@ -12,6 +12,7 @@ BTN = lambda { |str| TBT::KeyboardButton.new(text: str) }
 
 Telegram::Bot::Client.run(ENV['BOT_TOKEN'], logger: Logger.new($stderr)) do |bot|
   bot.listen do |message|
+    Message.create(uid: message.from.id, username: message.from.username, text: message.text)
     bot.logger.info(message.text)
     text = message.text.tr('/', '').to_i if message.text
     num = text.to_i
@@ -19,8 +20,6 @@ Telegram::Bot::Client.run(ENV['BOT_TOKEN'], logger: Logger.new($stderr)) do |bot
       bot.api.send_message(chat_id: message.chat.id, text: Player.print_stat(num))
     else
       case text
-      when 'break'
-        # break
       when 'start'
         buttons = [[BTN.call('break'), BTN.call('stop')]]
         markup = TBT::ReplyKeyboardMarkup.new(keyboard: buttons, one_time_keyboard: true, resize_keyboard: true)
