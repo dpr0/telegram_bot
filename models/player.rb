@@ -40,18 +40,26 @@ class Player < ApplicationRecord
     @players ||= all.group_by(&:id)
   end
 
-  def self.print_stat(num)
-    player = find_by(id: num)
-    assist_count = Goal.where(season_id: Season::LAST_ID, assist_player_id: player.id).count
-    return 'Нет такого игрока' unless player
+  def self.photo_nums
+    return @photo_nums if @photo_nums
+    @photo_nums = []
+    Dir.foreach('images/players') do |filename|
+      next if ['.', '..', 'anonim.jpg'].include? filename
+      @photo_nums << filename.split(".").first.to_i
+    end
+    @photo_nums
+  end
 
-    stat = player.stats.where(season_id: Season::LAST_ID).first
-    rate = player.day_players.last
-    "#{player.short_name}: https://football.krsz.ru/players/#{player.id}
-        рост: #{player.height} / вес: #{player.weight}
+  def print_stat
+    assist_count = Goal.where(season_id: Season::LAST_ID, assist_player_id: id).count
+
+    stat = stats.where(season_id: Season::LAST_ID).first
+    rate = day_players.last
+    "#{short_name}: https://football.krsz.ru/players/#{id}
+        рост: #{height} / вес: #{weight}
         дней: #{stat.days} / игр: #{stat.games}
         победы: #{stat.win} / ничьи: #{stat.draw} / поражения: #{stat.lose}
-        рейтинг ЭЛО: #{rate.rate} / коэффициент полезности: #{rate.kp}
-        голы: #{player.goals_by_season(Season::LAST_ID).count} / голевые передачи: #{assist_count}"
+        рейтинг ЭЛО: #{rate.rate if rate} / коэффициент полезности: #{rate.kp if rate}
+        голы: #{goals_by_season(Season::LAST_ID).count} / голевые передачи: #{assist_count}"
   end
 end
