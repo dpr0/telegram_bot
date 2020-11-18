@@ -7,13 +7,6 @@ require_relative 'models/application_record'
 require_relative 'models/dictionary'
 Dir['models/*.rb'].each { |file| require_relative file }
 
-Telegram::Bot::Client.run(ENV['BOT_TOKEN'], logger: Logger.new($stderr)) do |bot|
-  bot.listen do |message|
-    Msg.new(message).event
-    bot.logger.info(message.text)
-  end
-end
-
 class Msg
 
   TBT = Telegram::Bot::Types
@@ -49,5 +42,12 @@ class Msg
       end
     end
 
+  end
+end
+
+Telegram::Bot::Client.run(ENV['BOT_TOKEN'], logger: Logger.new($stderr)) do |bot|
+  bot.listen do |message|
+    Msg.new(message).event
+    bot.logger.info(message.text)
   end
 end
