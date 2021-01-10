@@ -59,7 +59,7 @@ class Player < ApplicationRecord
         рост: #{height} / вес: #{weight}
         дней: #{stat.days} / игр: #{stat.games}
         победы: #{stat.win} / ничьи: #{stat.draw} / поражения: #{stat.lose}
-        рейтинг ЭЛО: #{rate.rate if rate} / коэффициент полезности: #{rate.kp if rate}
+        рейтинг ЭЛО: #{rate.elo if rate} / коэффициент полезности: #{rate.kp if rate}
         голы: #{goals_by_season(Season::LAST_ID).count} / голевые передачи: #{assist_count}"
   end
 end
