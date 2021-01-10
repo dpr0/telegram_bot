@@ -1,5 +1,5 @@
 # config valid for current version and patch releases of Capistrano
-lock "~> 3.14.1"
+lock "~> 3.15.0"
 
 server 'krsz.ru', port: 2222, roles: %w(app db web), primary: true
 
