@@ -5,7 +5,7 @@ server 'krsz.ru', port: 2222, roles: %w(app db web), primary: true
 
 set :application,     'telegram_bot'
 set :repo_url,        'git@github.com:dpr0/telegram_bot.git'
-set :rbenv_ruby,      '2.6.3'
+set :rbenv_ruby,      '3.0.0'
 set :deploy_user,     'deploy'
 set :linked_files,    fetch(:linked_files, []).push('.env')
 set :format_options, command_output: true, log_file: "log/capistrano.log", color: :auto, truncate: :auto

@@ -8,10 +8,9 @@ require_relative 'models/dictionary'
 Dir['models/*.rb'].each { |file| require_relative file }
 
 class Msg
-
   TBT = Telegram::Bot::Types
-  BTN = lambda { |str| TBT::KeyboardButton.new(text: str) }
-  PHOTO = lambda { |num| Faraday::UploadIO.new("images/players/#{Player.photo_nums.include?(num) ? num : 'anonim'}.jpg", 'image/jpeg') }
+  BTN = ->(str) { TBT::KeyboardButton.new(text: str) }
+  PHOTO = ->(num) { Faraday::UploadIO.new("images/players/#{Player.photo_nums.include?(num) ? num : 'anonim'}.jpg", 'image/jpeg') }
 
   def initialize(bot, message)
     Message.create(uid: message.from.id, username: message.from.username, text: message.text)
@@ -22,14 +21,7 @@ class Msg
   end
 
   def event
-    if @num != 0
-      player = Player.find_by(id: @num)
-      if player
-        @bot.api.send_photo(chat_id: @message.chat.id, caption: player.print_stat, photo: PHOTO.(@num))
-      else
-        @bot.api.send_message(chat_id: @message.chat.id, text: 'Нет такого игрока')
-      end
-    else
+    if @num.zero?
       case @text
       when 'start'
         buttons = [[BTN.('break'), BTN.('stop')]]
@@ -41,14 +33,20 @@ class Msg
       else
         # bot.api.send_message(chat_id: @message.chat.id, text: "#{@message.from.first_name}, я не понимаю тебя 🤷‍")
       end
+    else
+      player = Player.find_by(id: @num)
+      if player
+        @bot.api.send_photo(chat_id: @message.chat.id, caption: player.print_stat, photo: PHOTO.call(@num))
+      else
+        @bot.api.send_message(chat_id: @message.chat.id, text: 'Нет такого игрока')
+      end
     end
-
   end
 end
 
 Telegram::Bot::Client.run(ENV['BOT_TOKEN'], logger: Logger.new($stderr)) do |bot|
   bot.listen do |message|
     Msg.new(bot, message).event
-    bot.logger.info(message.text)
+    bot.logger.info(message) # message.text
   end
 end
