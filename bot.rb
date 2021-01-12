@@ -13,9 +13,19 @@ class Msg
   PHOTO = ->(num) { Faraday::UploadIO.new("images/players/#{Player.photo_nums.include?(num) ? num : 'anonim'}.jpg", 'image/jpeg') }
 
   def initialize(bot, message)
-    Message.create(uid: message.from.id, username: message.from.username, text: message.text)
+    @chat_id = message.chat.id if message.chat
+    Message.create(
+      uid:               message.from.id,
+      username:          message.from.username,
+      text:              message.text,
+      message_id:        message.message_id,
+      chat_id:           @chat_id,
+      date:              message.date,
+      reply_message_id: (message.reply_to_message.message_id if message.reply_to_message)
+    )
     @text = message.text.tr('/', '') if message.text
-    @num = @text.to_i
+    a = @text.split
+    @num = a.first.to_i if a.size == 1 && a.first.to_i != 0
     @message = message
     @bot = bot
   end
@@ -26,10 +36,10 @@ class Msg
       when 'start'
         buttons = [[BTN.('break'), BTN.('stop')]]
         markup = TBT::ReplyKeyboardMarkup.new(keyboard: buttons, one_time_keyboard: true, resize_keyboard: true)
-        @bot.api.send_message(chat_id: @message.chat.id, text: "Привет #{@message.from.first_name}! Выберите действие:", reply_markup: markup)
+        @bot.api.send_message(chat_id: @chat_id, text: "Привет #{@message.from.first_name}! Выберите действие:", reply_markup: markup)
       when 'stop'
         kb = TBT::ReplyKeyboardRemove.new(remove_keyboard: true)
-        @bot.api.send_message(chat_id: @message.chat.id, text: 'stop', reply_markup: kb)
+        @bot.api.send_message(chat_id: @chat_id, text: 'stop', reply_markup: kb)
       else
         # bot.api.send_message(chat_id: @message.chat.id, text: "#{@message.from.first_name}, я не понимаю тебя 🤷‍")
       end
