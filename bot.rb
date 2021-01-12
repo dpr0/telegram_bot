@@ -56,7 +56,7 @@ end
 
 Telegram::Bot::Client.run(ENV['BOT_TOKEN'], logger: Logger.new($stderr)) do |bot|
   bot.listen do |message|
+    bot.logger.info(message)
     Msg.new(bot, message).event
-    bot.logger.info(message) # message.text
   end
 end
