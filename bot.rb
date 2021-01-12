@@ -31,7 +31,14 @@ class Msg
   end
 
   def event
-    if @num.zero?
+    if @num
+      player = Player.find_by(id: @num)
+      if player
+        @bot.api.send_photo(chat_id: @message.chat.id, caption: player.print_stat, photo: PHOTO.call(@num))
+      else
+        @bot.api.send_message(chat_id: @message.chat.id, text: 'Нет такого игрока')
+      end
+    else
       case @text
       when 'start'
         buttons = [[BTN.('break'), BTN.('stop')]]
@@ -42,13 +49,6 @@ class Msg
         @bot.api.send_message(chat_id: @chat_id, text: 'stop', reply_markup: kb)
       else
         # bot.api.send_message(chat_id: @message.chat.id, text: "#{@message.from.first_name}, я не понимаю тебя 🤷‍")
-      end
-    else
-      player = Player.find_by(id: @num)
-      if player
-        @bot.api.send_photo(chat_id: @message.chat.id, caption: player.print_stat, photo: PHOTO.call(@num))
-      else
-        @bot.api.send_message(chat_id: @message.chat.id, text: 'Нет такого игрока')
       end
     end
   end
