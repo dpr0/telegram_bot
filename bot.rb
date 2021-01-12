@@ -24,8 +24,8 @@ class Msg
       reply_message_id: (message.reply_to_message.message_id if message.reply_to_message)
     )
     @text = message.text.tr('/', '') if message.text
-    a = @text.split
-    @num = a.first.to_i if a.size == 1 && a.first.to_i != 0
+    a = @text.split if @text
+    @num = a.first.to_i if a && a.size == 1 && a.first.to_i != 0
     @message = message
     @bot = bot
   end
